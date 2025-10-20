@@ -15,6 +15,7 @@
 
 <style>
     #map { height: 180px;}
+
 </style>
 
 </head>
@@ -31,7 +32,33 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 
-var marker = L.marker([51.5, -0.09]).addTo(map);
-marker.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup();
+
+function initMap(mapDataUrl){
+    
+var map = L.map('map').setView([51.505, -0.09], 13); 
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+}).addTo(map);
+
+console.log("Map Loaded" + date())
+
+   fetch(mapDataUrl)
+    .then(response => response.json())
+    .then(data => {
+        data.forEach(item => {
+            data.forEach(pin=>{
+                const marker = L.marker([pin.latitude, pin.longitude]).addTo(map);
+                const img = `<img src='${pin.img}' class='popup-image'>`;
+                const popupContent = `${img}<br><b> pin.title </b><br> ${pin.description} `;
+
+                console.log(`${pin.name} Loaded` + Date());
+            });
+           
+        })
+        .catch(err=>console.error('Errror Loaading JSON:', err));
+    })
+
+}
 </script>    
 </html>
